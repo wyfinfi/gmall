@@ -6,3 +6,4 @@
 *.class
 mvnw*
 .mvn/
+target/

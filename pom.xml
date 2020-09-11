@@ -20,16 +20,19 @@
         <module>gmall-admin</module>
         <module>gmall-common</module>
         <module>gmall-sms</module>
-<!--        <module>gmall-search</module>-->
         <module>gmall-pms</module>
         <module>gmall-wms</module>
         <module>gmall-ums</module>
-<!--        <module>gmall-cart</module>-->
         <module>gmall-oms</module>
         <module>gmall-ums</module>
         <module>gmall-wms</module>
         <module>gmall-sms</module>
         <module>gmall-oms</module>
+        <module>gmall-sms-interface</module>
+        <module>gmall-pms-interface</module>
+        <module>gmall-wms-interface</module>
+        <module>gmall-ums-interface</module>
+        <module>gmall-cart</module>
     </modules>
 
     <properties>
@@ -63,11 +66,11 @@
                 <scope>import</scope>
             </dependency>
 
-            <dependency>
-                <groupId>org.redisson</groupId>
-                <artifactId>redisson</artifactId>
-                <version>${redisson.version}</version>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>org.redisson</groupId>-->
+<!--                <artifactId>redisson</artifactId>-->
+<!--                <version>${redisson.version}</version>-->
+<!--            </dependency>-->
 
             <dependency>
                 <groupId>org.thymeleaf</groupId>
@@ -133,19 +136,11 @@
                 <artifactId>joda-time</artifactId>
                 <version>${joda.version}</version>
             </dependency>
-
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>1.7.30</version>
-            </dependency>
-
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${lang3.version}</version>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 
