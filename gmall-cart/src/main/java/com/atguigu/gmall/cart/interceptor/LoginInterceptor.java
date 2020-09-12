@@ -4,9 +4,10 @@ import com.atguigu.gmall.cart.bean.UserInfo;
 import com.atguigu.gmall.cart.config.JwtProperties;
 import com.atguigu.gmall.common.utils.CookieUtils;
 import com.atguigu.gmall.common.utils.JwtUtils;
+import net.bytebuddy.build.ToStringPlugin;
 import org.apache.commons.lang3.StringUtils;
-import org.aspectj.weaver.ast.Var;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -21,6 +22,7 @@ import java.util.UUID;
  * @Version 1.0
  */
 @Component
+@EnableConfigurationProperties(JwtProperties.class)
 public class LoginInterceptor implements HandlerInterceptor {
     @Autowired
     private JwtProperties jwtProperties;

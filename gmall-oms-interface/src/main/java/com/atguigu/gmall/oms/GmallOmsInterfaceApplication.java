@@ -1,13 +1,13 @@
-package com.atguigu.gmall.shcheduled;
+package com.atguigu.gmall.oms;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class GmallShcheduledApplication {
+public class GmallOmsInterfaceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(GmallShcheduledApplication.class, args);
+        SpringApplication.run(GmallOmsInterfaceApplication.class, args);
     }
 
 }

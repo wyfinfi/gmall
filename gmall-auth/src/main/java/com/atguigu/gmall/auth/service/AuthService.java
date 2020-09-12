@@ -34,6 +34,7 @@ public class AuthService {
             ResponseVo<UserEntity> userEntityResponseVo = this.umsClient.queryUSer(loginName, password);
             UserEntity userEntity = userEntityResponseVo.getData();
             //判断用户信息是否为空
+            System.out.println("userEntity = " + userEntity);
             if(userEntity==null){
                 return;
             }
@@ -46,6 +47,7 @@ public class AuthService {
             map.put("ip",ipAddress);
             //制作token
             String token = JwtUtils.generateToken(map, jwtProperties.getPrivateKey(), jwtProperties.getExpire());
+            System.out.println("token = " + token);
             //把jwt放入cookie中
             CookieUtils.setCookie(request,response,jwtProperties.getCookieName()
                     ,token,jwtProperties.getExpire()*60);

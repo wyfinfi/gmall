@@ -1,14 +1,13 @@
 package com.atguigu.gmall.order.interceptor;
 
 import com.atguigu.gmall.order.bean.UserInfo;
-import com.atguigu.gmall.order.config.JwtProperties;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.UUID;
+
 
 /**
  * @Author Administrator
@@ -23,7 +22,8 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         UserInfo userInfo = new UserInfo();
         // 获取请求头信息
-        Long userId = Long.valueOf(request.getHeader("userId"));
+        String userId1= request.getHeader("userId");
+        Long userId  = Long.valueOf(userId1);
         userInfo.setUserId(userId);
         //把信息放入局部变量
         THREAD_LOCAL.set(userInfo);

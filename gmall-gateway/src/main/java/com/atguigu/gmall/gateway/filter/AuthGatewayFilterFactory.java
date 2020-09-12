@@ -66,8 +66,10 @@ public class AuthGatewayFilterFactory extends AbstractGatewayFilterFactory<AuthG
                 ServerHttpResponse response = exchange.getResponse();
                 //判断当前请求路径在不在拦截路径中，不在放行
                 List<String> paths = config.paths;
+
                 String requestpath = request.getURI().getPath();
-                if(CollectionUtils.isEmpty(paths)||!paths.stream().anyMatch(path->path.startsWith(requestpath))){
+                System.out.println("CollectionUtils.isEmpty(paths) = " + CollectionUtils.isEmpty(paths));
+                if(CollectionUtils.isEmpty(paths)||!paths.stream().anyMatch(path->requestpath.startsWith(path))){
                     return chain.filter(exchange);
                 }
                 //获取token信息异步请求头中获取，同步cookie中获取
@@ -83,12 +85,13 @@ public class AuthGatewayFilterFactory extends AbstractGatewayFilterFactory<AuthG
                     response.setStatusCode(HttpStatus.SEE_OTHER);
                     response.getHeaders().set(HttpHeaders.LOCATION,
                             "http://sso.gmall.com/toLogin.html?returnUrl=" + request.getURI());
-                    response.setComplete();
+                    return response.setComplete();
                 }
                 try {
                     //解析jwt有异常直接拦截
                     Map<String, Object> map = JwtUtils.getInfoFromToken(token, jwtProperties.getPublicKey());
                     //判断ip
+                    System.out.println("map = " + map);
                     String ip = map.get("ip").toString();
                     String curIp = IpUtil.getIpAddressAtGateway(request);
                     if(!StringUtils.equals(ip,curIp)){

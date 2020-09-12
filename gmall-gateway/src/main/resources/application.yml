@@ -53,8 +53,8 @@ spring:
           uri: lb://auth-service
           predicates:
             - Host=sso.gmall.com,auth.gmall.com
-          fiters:
-            - Auth=/tologin.html,/login
+          filters:
+            - AddResponseHeader=xxxxx, yyyyy
         - id: cart-route
           uri: lb://cart-service
           predicates:
@@ -63,8 +63,9 @@ spring:
           uri: lb://order-service
           predicates:
             - Host=order.gmall.com
-          fiters:
-            - Auth=
+          filters:
+            - Auth=/confirm,/submit
+
 auth:
   jwt:
     pubKeyPath: D:\\rsa\\rsa.pub # 公钥地址

@@ -2,6 +2,8 @@ package com.atguigu.gmall.auth.controller;
 
 import com.atguigu.gmall.auth.config.JwtProperties;
 import com.atguigu.gmall.auth.service.AuthService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
  * @Version 1.0
  */
 @Controller
+@Api(tags = "登录管理")
 public class AuthController {
     @Autowired
     private AuthService authService;
@@ -35,6 +38,7 @@ public class AuthController {
         return "register";
     }
     @PostMapping("login")
+    @ApiOperation("登录")
     public String login(
             @RequestParam("loginName") String loginName,
             @RequestParam("password") String password,

@@ -10,6 +10,10 @@ import com.atguigu.gmall.order.vo.OrderItemVo;
 import com.atguigu.gmall.pms.entity.SkuAttrValueEntity;
 import com.atguigu.gmall.pms.entity.SkuEntity;
 import com.atguigu.gmall.sms.intfc.vo.ItemSaleVo;
+import com.atguigu.gmall.ums.entity.UserAddressEntity;
+import com.atguigu.gmall.ums.entity.UserEntity;
+import com.atguigu.gmall.wms.entity.WareSkuEntity;
+import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import org.aspectj.weaver.ast.Var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -46,7 +50,7 @@ public class OrderService {
 
     private static final String KEY_PREFIX = "order:token:";
 
-    //使用异步bianp
+    //使用异步编排
     public OrderConfirmVo confirm() {
         OrderConfirmVo orderConfirmVo = new OrderConfirmVo();
         UserInfo userInfo = LoginInterceptor.getUserInfo();
@@ -82,17 +86,50 @@ public class OrderService {
                    orderItemVo.setSaleAttrs(skuAttrValueEntities);
                },threadPoolExecutor);
                //根据skuId查询营销信息
-
-
                CompletableFuture<Void> saleCompletableFuture = CompletableFuture.runAsync(() -> {
                    ResponseVo<List<ItemSaleVo>> ItemSaleVos =
                            this.smsClient.querySalesBySkuId(cart.getSkuId());
                    List<ItemSaleVo> itemSaleVoList = ItemSaleVos.getData();
                    orderItemVo.setSales(itemSaleVoList);
                }, threadPoolExecutor);
-                return orderItemVo;
+               //根据id查询库存信息
+               CompletableFuture<Void> wareCompletableFuture = CompletableFuture.runAsync(() -> {
+                   ResponseVo<List<WareSkuEntity>> wareResponseVo = this.wmsClient.queryWareSkuBySkuId(cart.getSkuId());
+                   List<WareSkuEntity> wareSkuEntityList = wareResponseVo.getData();
+                   if (!CollectionUtils.isEmpty(wareSkuEntityList)) {
+                       orderItemVo.setStore(wareSkuEntityList.stream().anyMatch(wareSkuEntity ->
+                               wareSkuEntity.getStock() - wareSkuEntity.getStockLocked() > 0));
+                   }
+               }, threadPoolExecutor);
+               CompletableFuture.allOf(skuCompletableFuture,saleCompletableFuture,
+                       skuAttrValueCompletableFuture,wareCompletableFuture).join();
+               return orderItemVo;
            }).collect(Collectors.toList());
+           orderConfirmVo.setItems(items);
         }, threadPoolExecutor);
-        return null;
+        //查询收货地址列表
+        CompletableFuture<Void> addressompletableFuture = CompletableFuture.runAsync(() -> {
+            ResponseVo<List<UserAddressEntity>> addresstResponseVo =
+                    this.umsClient.queryAddressByUserId(userId);
+            List<UserAddressEntity> addressEntityList = addresstResponseVo.getData();
+            orderConfirmVo.setAddresses(addressEntityList);
+        }, threadPoolExecutor);
+        //查询用户的积分值
+        CompletableFuture<Void> boundsCompletableFuture = CompletableFuture.runAsync(() -> {
+            ResponseVo<UserEntity> userEntityResponseVo = this.umsClient.queryUserById(userId);
+            UserEntity userEntity = userEntityResponseVo.getData();
+            if(userEntity!=null){
+                orderConfirmVo.setBounds(userEntity.getIntegration());
+            }
+        }, threadPoolExecutor);
+        //防重唯一标识
+        CompletableFuture<Void> tokenCompletableFuture = CompletableFuture.runAsync(() -> {
+            String timeId = IdWorker.getTimeId();
+            this.redisTemplate.opsForValue().set(KEY_PREFIX+timeId,timeId);
+            orderConfirmVo.setOrderToken(timeId);
+        }, threadPoolExecutor);
+        CompletableFuture.allOf(itemCompletableFuture,addressompletableFuture,
+                boundsCompletableFuture,tokenCompletableFuture).join();
+        return orderConfirmVo;
     }
 }

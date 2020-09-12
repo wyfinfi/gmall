@@ -145,7 +145,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
 
         for (UserEntity userEntity : userEntities) {
             password =DigestUtils.md5Hex(userEntity.getSalt()+password);
-            if(!StringUtils.equals(userEntity.getPassword(),password)){
+            if(StringUtils.equals(userEntity.getPassword(),password)){
                 return userEntity;
             }
         }

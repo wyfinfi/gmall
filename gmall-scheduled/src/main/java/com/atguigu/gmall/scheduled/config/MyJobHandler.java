@@ -1,4 +1,4 @@
-package com.atguigu.gmall.shcheduled.config;
+package com.atguigu.gmall.scheduled.config;
 
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.handler.annotation.XxlJob;

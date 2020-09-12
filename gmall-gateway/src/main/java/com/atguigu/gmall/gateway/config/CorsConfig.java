@@ -22,6 +22,7 @@ public class CorsConfig {
          configuration.addAllowedOrigin("http://www.gmall.com");
          configuration.addAllowedOrigin("http://gmall.com");
          configuration.addAllowedOrigin("http://sso.gmall.com");
+         configuration.addAllowedOrigin("http://order.gmall.com");
          configuration.addAllowedOrigin("localhost");
          configuration.addAllowedOrigin("127.0.0.1");
 
